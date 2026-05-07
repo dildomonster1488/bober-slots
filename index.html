@@ -228,6 +228,17 @@
 
         // Загружаем баланс из localStorage
         const savedBalance = localStorage.getItem('bober_balance_' + userId);
+if (savedBalance) {
+    balance = parseInt(savedBalance);
+}
+
+// Запрашиваем баланс у бота
+if (userId) {
+    tg.sendData(JSON.stringify({
+        action: 'get_balance',
+        user_id: userId
+    }));
+}
         if (savedBalance) {
             balance = parseInt(savedBalance);
         }
