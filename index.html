@@ -1,3 +1,5 @@
+cd ~/bober-slots
+cat > index.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,6 +43,16 @@
             color: #000;
             font-weight: bold;
             display: inline-block;
+        }
+        .bonus-alert{
+            background: rgba(0,255,0,0.3);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            color: #00ff00;
+            font-weight: bold;
         }
         .game-box{
             background: rgba(0,0,0,0.7);
@@ -161,6 +173,7 @@
         <div class="header">
             <h1>🦫 BOBER SLOTS</h1>
             <div class="balance">💰 <span id="bal">10000</span> монет</div>
+            <div id="bonusAlert" class="bonus-alert" style="display:none;"></div>
         </div>
 
         <div id="game-slots">
@@ -225,49 +238,55 @@
         
         const initData = tg.initDataUnsafe || {};
         const userId = initData.user ? initData.user.id : null;
+        const userKey = 'bober_balance_' + (userId || 'guest');
 
-        // Загружаем баланс из localStorage
-        const savedBalance = localStorage.getItem('bober_balance_' + userId);
-if (savedBalance) {
-    balance = parseInt(savedBalance);
-}
-
-// Запрашиваем баланс у бота
-if (userId) {
-    tg.sendData(JSON.stringify({
-        action: 'get_balance',
-        user_id: userId
-    }));
-}
+        // Загружаем сохранённый баланс
+        const savedBalance = localStorage.getItem(userKey);
         if (savedBalance) {
             balance = parseInt(savedBalance);
         }
         updateBal();
 
-        // Запрашиваем актуальный баланс у бота (на случай если админ выдал деньги)
-        if (userId) {
-            tg.sendData(JSON.stringify({
-                action: 'get_balance',
-                user_id: userId
-            }));
-        }
-
-        // Каждые 3 секунды проверяем баланс (для получения денег от админа)
-        setInterval(function() {
+        // Запрашиваем бонусы у бота
+        function checkBonus() {
             if (userId) {
                 tg.sendData(JSON.stringify({
-                    action: 'get_balance',
+                    action: 'request_bonus',
                     user_id: userId
                 }));
             }
-        }, 3000);
+        }
+
+        // Проверяем бонусы при запуске
+        checkBonus();
+
+        // Проверяем бонусы каждые 10 секунд
+        setInterval(checkBonus, 10000);
+
+        // Обработка ответа от бота (бонусы)
+        window.addEventListener('message', function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.bonus && data.bonus > 0) {
+                    balance += data.bonus;
+                    updateBal();
+                    saveBalance();
+                    
+                    document.getElementById('bonusAlert').textContent = '🎁 Получен бонус: +' + data.bonus + ' монет!';
+                    document.getElementById('bonusAlert').style.display = 'block';
+                    setTimeout(function() {
+                        document.getElementById('bonusAlert').style.display = 'none';
+                    }, 5000);
+                }
+            } catch(e) {}
+        });
 
         function saveBalance() {
-            localStorage.setItem('bober_balance_' + userId, balance);
+            localStorage.setItem(userKey, balance);
             
             if (userId) {
                 tg.sendData(JSON.stringify({
-                    action: 'update_balance',
+                    action: 'balance_update',
                     user_id: userId,
                     amount: balance
                 }));
@@ -300,11 +319,13 @@ if (userId) {
         async function playSlots() {
             const bet = parseInt(document.getElementById('slotBet').value);
             if (bet < 10) { showSlotResult('Минимальная ставка: 10!', false); return; }
-            if (bet > balance) { showSlotResult('Недостаточно монет!', false); return; }
+            if (bet > balance) { 
+                showSlotResult('Недостаточно монет! Возьмите бонус в боте 🎁', false); 
+                return; 
+            }
 
             balance -= bet;
             updateBal();
-            saveBalance();
 
             const sym = ['🦫','🍋','🍊','🍇','💎','7️⃣'];
             
@@ -353,11 +374,13 @@ if (userId) {
         async function playDice() {
             const bet = parseInt(document.getElementById('diceBet').value);
             if (bet < 10) { showDiceResult('Минимальная ставка: 10!', false); return; }
-            if (bet > balance) { showDiceResult('Недостаточно монет!', false); return; }
+            if (bet > balance) { 
+                showDiceResult('Недостаточно монет! Возьмите бонус в боте 🎁', false); 
+                return; 
+            }
 
             balance -= bet;
             updateBal();
-            saveBalance();
 
             const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
             
@@ -399,3 +422,4 @@ if (userId) {
     </script>
 </body>
 </html>
+EOF
