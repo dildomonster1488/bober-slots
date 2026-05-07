@@ -7,201 +7,151 @@ cat > index.html << 'EOF'
     <title>BOBER SLOTS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: url('back.png') center/cover fixed;
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background: #1a1a2e;
             font-family: -apple-system, sans-serif;
             color: white;
             min-height: 100vh;
         }
-        .container {
+        .container{
             max-width: 420px;
             margin: 0 auto;
             padding: 15px;
-            min-height: 100vh;
         }
-        .header {
+        .header{
             text-align: center;
-            padding: 15px;
-            background: rgba(0,0,0,0.6);
+            padding: 20px;
+            background: #0d0d1a;
             border-radius: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .header h1 {
+        .header h1{
             color: #ff8c00;
             font-size: 28px;
             margin-bottom: 10px;
         }
-        .balance {
-            font-size: 18px;
-            background: rgba(255,140,0,0.3);
-            padding: 10px 20px;
-            border-radius: 20px;
+        .balance{
+            font-size: 20px;
+            background: #ff8c00;
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: #000;
+            font-weight: bold;
             display: inline-block;
-            border: 1px solid #ff8c00;
         }
-        .slots-frame {
-            background: rgba(0,0,0,0.7);
-            border: 3px solid #ff8c00;
+        .game-box{
+            background: #0d0d1a;
+            border: 2px solid #ff8c00;
             border-radius: 20px;
-            padding: 20px;
+            padding: 25px;
             margin: 15px 0;
+            text-align: center;
         }
-        .slots-display {
+        .slots-row{
             display: flex;
             justify-content: center;
             gap: 10px;
+            margin: 20px 0;
         }
-        .slot {
-            width: 100px;
-            height: 100px;
-            background: #1a1a1a;
+        .slot-item{
+            width: 90px;
+            height: 90px;
+            background: #1a1a2e;
+            border: 3px solid #ff8c00;
             border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            border: 2px solid #ff8c00;
+            font-size: 45px;
+            transition: all 0.1s;
         }
-        .dice-display {
-            text-align: center;
+        .dice-box{
+            font-size: 100px;
             margin: 20px 0;
-            background: rgba(0,0,0,0.7);
-            border: 3px solid #ff8c00;
-            border-radius: 20px;
-            padding: 30px;
         }
-        .dice {
-            font-size: 90px;
+        .bet-section{
+            margin: 20px 0;
         }
-        .bet-controls {
-            margin: 15px 0;
-            text-align: center;
-            background: rgba(0,0,0,0.5);
+        .bet-section input{
+            width: 150px;
             padding: 15px;
-            border-radius: 15px;
-        }
-        .bet-controls label {
-            color: #ff8c00;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
-        .bet-controls input {
-            width: 130px;
-            padding: 12px;
-            font-size: 20px;
+            font-size: 22px;
             text-align: center;
-            background: rgba(0,0,0,0.8);
+            background: #1a1a2e;
             border: 2px solid #ff8c00;
             border-radius: 10px;
             color: white;
-            margin-bottom: 10px;
         }
-        .quick-bets {
+        .quick-btns{
+            margin: 10px 0;
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
             flex-wrap: wrap;
         }
-        .quick-bets button {
-            padding: 8px 14px;
-            background: rgba(255,140,0,0.3);
+        .quick-btns button{
+            padding: 10px 15px;
+            background: #1a1a2e;
             border: 1px solid #ff8c00;
             border-radius: 8px;
             color: #ff8c00;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
         }
-        .quick-bets button:active {
-            background: rgba(255,140,0,0.6);
-        }
-        .spin-btn, .roll-btn {
+        .play-btn{
             width: 100%;
-            padding: 16px;
-            font-size: 20px;
+            padding: 18px;
+            font-size: 22px;
             font-weight: bold;
-            background: linear-gradient(#ff8c00, #ff6600);
+            background: #ff8c00;
             border: none;
             border-radius: 15px;
-            color: white;
+            color: #000;
             cursor: pointer;
-            margin: 10px 0;
-        }
-        .spin-btn:active, .roll-btn:active {
-            transform: scale(0.97);
-        }
-        .spin-btn:disabled, .roll-btn:disabled {
-            background: #666;
-            opacity: 0.5;
-        }
-        .dice-bet-type {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
             margin: 15px 0;
-            background: rgba(0,0,0,0.5);
+        }
+        .play-btn:active{
+            background: #ff6600;
+        }
+        .result-msg{
             padding: 15px;
-            border-radius: 15px;
-        }
-        .dice-type-btn {
-            padding: 10px;
-            background: rgba(0,0,0,0.5);
-            border: 2px solid transparent;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .dice-type-btn.active {
-            border-color: #ff8c00;
-            background: rgba(255,140,0,0.3);
-        }
-        .result {
-            text-align: center;
-            padding: 12px;
-            margin: 8px 0;
             border-radius: 10px;
             font-weight: bold;
-            min-height: 45px;
-            background: rgba(0,0,0,0.5);
+            font-size: 16px;
+            margin: 10px 0;
+            min-height: 50px;
         }
-        .result.win {
-            background: rgba(0,150,0,0.5);
+        .win-msg{
+            background: #003300;
             border: 2px solid #00ff00;
             color: #00ff00;
         }
-        .result.lose {
-            background: rgba(150,0,0,0.5);
+        .lose-msg{
+            background: #330000;
             border: 2px solid #ff0000;
             color: #ff6666;
         }
-        .bottom-nav {
+        .nav-btns{
             display: flex;
             gap: 10px;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0,0,0,0.7);
-            border-radius: 15px;
+            margin-top: 20px;
         }
-        .nav-btn {
+        .nav-btns button{
             flex: 1;
-            padding: 10px;
-            background: transparent;
-            border: 2px solid transparent;
+            padding: 15px;
+            background: #0d0d1a;
+            border: 2px solid #333;
             border-radius: 10px;
             color: #aaa;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
         }
-        .nav-btn.active {
+        .nav-btns button.active{
             border-color: #ff8c00;
             color: #ff8c00;
-            background: rgba(255,140,0,0.2);
         }
     </style>
 </head>
@@ -209,180 +159,211 @@ cat > index.html << 'EOF'
     <div class="container">
         <div class="header">
             <h1>🦫 BOBER SLOTS</h1>
-            <div class="balance">💰 <span id="balance">10000</span> монет</div>
+            <div class="balance">💰 <span id="bal">10000</span> монет</div>
         </div>
 
-        <div id="slots-screen">
-            <div class="slots-frame">
-                <div class="slots-display">
-                    <div class="slot" id="slot1">🦫</div>
-                    <div class="slot" id="slot2">🦫</div>
-                    <div class="slot" id="slot3">🦫</div>
+        <div id="game-slots">
+            <div class="game-box">
+                <div class="slots-row">
+                    <div class="slot-item" id="s1">🦫</div>
+                    <div class="slot-item" id="s2">🦫</div>
+                    <div class="slot-item" id="s3">🦫</div>
                 </div>
             </div>
-            <div class="bet-controls">
-                <label>Ставка:</label>
-                <input type="number" id="slot-bet" min="10" value="100">
-                <div class="quick-bets">
-                    <button onclick="setBet(50)">50</button>
-                    <button onclick="setBet(100)">100</button>
-                    <button onclick="setBet(500)">500</button>
-                    <button onclick="setBet(1000)">1000</button>
+            <div class="bet-section">
+                <p style="color:#ff8c00;margin-bottom:10px">СТАВКА:</p>
+                <input type="number" id="slotBet" value="100" min="10">
+                <div class="quick-btns">
+                    <button onclick="setSlotBet(50)">50</button>
+                    <button onclick="setSlotBet(100)">100</button>
+                    <button onclick="setSlotBet(500)">500</button>
+                    <button onclick="setSlotBet(1000)">1000</button>
                 </div>
             </div>
-            <button class="spin-btn" id="spin-button" onclick="spinSlots()">🎰 КРУТИТЬ</button>
-            <div id="slot-result" class="result"></div>
+            <button class="play-btn" onclick="playSlots()">🎰 КРУТИТЬ</button>
+            <div id="slotResult"></div>
         </div>
 
-        <div id="dice-screen" style="display:none;">
-            <div class="dice-display">
-                <div class="dice" id="dice">🎲</div>
+        <div id="game-dice" style="display:none">
+            <div class="game-box">
+                <div class="dice-box" id="diceFace">🎲</div>
             </div>
-            <div class="dice-bet-type">
-                <button class="dice-type-btn active" onclick="setDiceType('high')">⬆️ Больше 3 (x1.5)</button>
-                <button class="dice-type-btn" onclick="setDiceType('low')">⬇️ Меньше 4 (x1.5)</button>
-                <button class="dice-type-btn" onclick="setDiceType('exact')">🎯 Ровно 6 (x5)</button>
-            </div>
-            <div class="bet-controls">
-                <label>Ставка:</label>
-                <input type="number" id="dice-bet" min="10" value="100">
-                <div class="quick-bets">
-                    <button onclick="setDiceBet(50)">50</button>
-                    <button onclick="setDiceBet(100)">100</button>
-                    <button onclick="setDiceBet(500)">500</button>
-                    <button onclick="setDiceBet(1000)">1000</button>
+            <div class="bet-section">
+                <p style="color:#ff8c00;margin-bottom:10px">ТИП СТАВКИ:</p>
+                <div class="quick-btns">
+                    <button id="diceHigh" style="border-color:#ff8c00" onclick="setDice('high')">Больше 3</button>
+                    <button id="diceLow" onclick="setDice('low')">Меньше 4</button>
+                    <button id="diceExact" onclick="setDice('exact')">Ровно 6</button>
+                </div>
+                <p style="color:#ff8c00;margin:15px 0 10px 0">СТАВКА:</p>
+                <input type="number" id="diceBet" value="100" min="10">
+                <div class="quick-btns">
+                    <button onclick="setDiceBetVal(50)">50</button>
+                    <button onclick="setDiceBetVal(100)">100</button>
+                    <button onclick="setDiceBetVal(500)">500</button>
+                    <button onclick="setDiceBetVal(1000)">1000</button>
                 </div>
             </div>
-            <button class="roll-btn" id="roll-button" onclick="rollDice()">🎲 БРОСИТЬ</button>
-            <div id="dice-result" class="result"></div>
+            <button class="play-btn" onclick="playDice()">🎲 БРОСИТЬ</button>
+            <div id="diceResult"></div>
         </div>
 
-        <div class="bottom-nav">
-            <button class="nav-btn active" id="nav-slots" onclick="showScreen('slots')">🎰 Слоты</button>
-            <button class="nav-btn" id="nav-dice" onclick="showScreen('dice')">🎲 Кости</button>
+        <div class="nav-btns">
+            <button id="navSlots" class="active" onclick="showGame('slots')">🎰 СЛОТЫ</button>
+            <button id="navDice" onclick="showGame('dice')">🎲 КОСТИ</button>
         </div>
     </div>
 
     <script>
-        // Всё в одном файле
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        
+
         let balance = 10000;
         let diceType = 'high';
-        
-        document.getElementById('balance').textContent = balance;
-        
-        function setBet(a) { document.getElementById('slot-bet').value = a; }
-        function setDiceBet(a) { document.getElementById('dice-bet').value = a; }
-        
-        function setDiceType(t) {
-            diceType = t;
-            document.querySelectorAll('.dice-type-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        let initData = tg.initDataUnsafe || {};
+        let userId = initData.user ? initData.user.id : null;
+
+        // При запуске запрашиваем баланс у бота
+        if (userId) {
+            tg.sendData(JSON.stringify({
+                action: 'get_balance',
+                user_id: userId,
+                amount: 0
+            }));
         }
-        
-        function showScreen(s) {
-            document.getElementById('slots-screen').style.display = s === 'slots' ? 'block' : 'none';
-            document.getElementById('dice-screen').style.display = s === 'dice' ? 'block' : 'none';
-            document.getElementById('nav-slots').classList.toggle('active', s === 'slots');
-            document.getElementById('nav-dice').classList.toggle('active', s === 'dice');
+
+        // Функция синхронизации баланса с ботом
+        function syncWithBot() {
+            if (userId) {
+                tg.sendData(JSON.stringify({
+                    action: 'update_balance',
+                    user_id: userId,
+                    amount: balance
+                }));
+            }
         }
-        
+
+        function showGame(game) {
+            document.getElementById('game-slots').style.display = game === 'slots' ? 'block' : 'none';
+            document.getElementById('game-dice').style.display = game === 'dice' ? 'block' : 'none';
+            document.getElementById('navSlots').className = game === 'slots' ? 'active' : '';
+            document.getElementById('navDice').className = game === 'dice' ? 'active' : '';
+        }
+
         function updateBal() {
-            document.getElementById('balance').textContent = balance;
+            document.getElementById('bal').textContent = balance;
+            // Синхронизируем с ботом при каждом обновлении
+            syncWithBot();
         }
-        
-        function showResult(id, msg, win) {
-            const el = document.getElementById(id);
-            el.textContent = msg;
-            el.className = 'result ' + (win ? 'win' : 'lose');
+
+        function setSlotBet(v) { document.getElementById('slotBet').value = v; }
+        function setDiceBetVal(v) { document.getElementById('diceBet').value = v; }
+
+        function setDice(t) {
+            diceType = t;
+            document.getElementById('diceHigh').style.borderColor = t === 'high' ? '#ff8c00' : '#333';
+            document.getElementById('diceLow').style.borderColor = t === 'low' ? '#ff8c00' : '#333';
+            document.getElementById('diceExact').style.borderColor = t === 'exact' ? '#ff8c00' : '#333';
         }
-        
+
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-        
-        const SLOTS = ['🦫', '🍋', '🍊', '🍇', '💎', '7️⃣'];
-        
-        async function spinSlots() {
-            const btn = document.getElementById('spin-button');
-            const bet = parseInt(document.getElementById('slot-bet').value);
-            
-            if (!bet || bet < 10) { showResult('slot-result', 'Мин. ставка: 10', false); return; }
-            if (bet > balance) { showResult('slot-result', 'Недостаточно монет', false); return; }
-            
-            btn.disabled = true;
+
+        async function playSlots() {
+            const bet = parseInt(document.getElementById('slotBet').value);
+            if (bet < 10) { showSlotResult('Минимальная ставка: 10!', false); return; }
+            if (bet > balance) { showSlotResult('Недостаточно монет!', false); return; }
+
             balance -= bet;
-            updateBal();
+            updateBal(); // Отправляем изменение боту
+
+            const sym = ['🦫','🍋','🍊','🍇','💎','7️⃣'];
             
-            for (let i = 0; i < 10; i++) {
-                await sleep(100);
-                document.getElementById('slot1').textContent = SLOTS[Math.floor(Math.random() * 6)];
-                document.getElementById('slot2').textContent = SLOTS[Math.floor(Math.random() * 6)];
-                document.getElementById('slot3').textContent = SLOTS[Math.floor(Math.random() * 6)];
+            for (let i = 0; i < 8; i++) {
+                await sleep(120);
+                document.getElementById('s1').textContent = sym[Math.floor(Math.random()*6)];
+                document.getElementById('s2').textContent = sym[Math.floor(Math.random()*6)];
+                document.getElementById('s3').textContent = sym[Math.floor(Math.random()*6)];
             }
+
+            const r1 = sym[Math.floor(Math.random()*6)];
+            const r2 = sym[Math.floor(Math.random()*6)];
+            const r3 = sym[Math.floor(Math.random()*6)];
             
-            const r = [SLOTS[Math.floor(Math.random() * 6)], SLOTS[Math.floor(Math.random() * 6)], SLOTS[Math.floor(Math.random() * 6)]];
-            document.getElementById('slot1').textContent = r[0];
-            document.getElementById('slot2').textContent = r[1];
-            document.getElementById('slot3').textContent = r[2];
-            
+            document.getElementById('s1').textContent = r1;
+            document.getElementById('s2').textContent = r2;
+            document.getElementById('s3').textContent = r3;
+
             let win = 0, msg = '';
-            if (r[0] === r[1] && r[1] === r[2]) {
-                let m = r[0] === '7️⃣' ? 10 : r[0] === '💎' ? 15 : 5;
+            
+            if (r1 === r2 && r2 === r3) {
+                let m = 5;
+                if (r1 === '7️⃣') m = 10;
+                if (r1 === '💎') m = 15;
                 win = bet * m;
-                msg = '🎉 ДЖЕКПОТ! x' + m + '\n+' + win;
-            } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
+                msg = '🎉 ДЖЕКПОТ x' + m + '! +' + win;
+            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
                 win = Math.floor(bet * 1.5);
-                msg = '✅ Два совпадения! x1.5\n+' + win;
+                msg = '✅ Два совпадения! +' + win;
             } else {
-                msg = '😔 Не повезло\n-' + bet;
+                msg = '😔 Не повезло! -' + bet;
             }
-            
+
             balance += win;
-            updateBal();
-            showResult('slot-result', msg, win > 0);
-            btn.disabled = false;
+            updateBal(); // Отправляем финальный баланс боту
+            showSlotResult(msg, win > 0);
         }
-        
-        async function rollDice() {
-            const btn = document.getElementById('roll-button');
-            const bet = parseInt(document.getElementById('dice-bet').value);
-            
-            if (!bet || bet < 10) { showResult('dice-result', 'Мин. ставка: 10', false); return; }
-            if (bet > balance) { showResult('dice-result', 'Недостаточно монет', false); return; }
-            
-            btn.disabled = true;
+
+        function showSlotResult(msg, win) {
+            const el = document.getElementById('slotResult');
+            el.textContent = msg;
+            el.className = 'result-msg ' + (win ? 'win-msg' : 'lose-msg');
+        }
+
+        async function playDice() {
+            const bet = parseInt(document.getElementById('diceBet').value);
+            if (bet < 10) { showDiceResult('Минимальная ставка: 10!', false); return; }
+            if (bet > balance) { showDiceResult('Недостаточно монет!', false); return; }
+
             balance -= bet;
-            updateBal();
+            updateBal(); // Отправляем изменение боту
+
+            const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
             
-            const FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-            for (let i = 0; i < 10; i++) {
-                await sleep(80);
-                document.getElementById('dice').textContent = FACES[Math.floor(Math.random() * 6)];
+            for (let i = 0; i < 8; i++) {
+                await sleep(100);
+                document.getElementById('diceFace').textContent = faces[Math.floor(Math.random()*6)];
             }
-            
-            const r = Math.floor(Math.random() * 6) + 1;
-            document.getElementById('dice').textContent = FACES[r - 1];
-            
+
+            const result = Math.floor(Math.random()*6) + 1;
+            document.getElementById('diceFace').textContent = faces[result-1];
+
             let win = false, mult = 0;
-            if (diceType === 'high' && r > 3) { win = true; mult = 1.5; }
-            if (diceType === 'low' && r < 4) { win = true; mult = 1.5; }
-            if (diceType === 'exact' && r === 6) { win = true; mult = 5; }
-            
-            let msg = 'Выпало: ' + r + '\n';
+            if (diceType === 'high' && result > 3) { win = true; mult = 1.5; }
+            if (diceType === 'low' && result < 4) { win = true; mult = 1.5; }
+            if (diceType === 'exact' && result === 6) { win = true; mult = 5; }
+
+            let msg = 'Выпало: ' + result + ' ';
             if (win) {
                 const wa = Math.floor(bet * mult);
                 balance += wa;
-                msg += '🎉 Победа! x' + mult + '\n+' + wa;
+                msg += '🎉 ВЫИГРЫШ x' + mult + '! +' + wa;
             } else {
-                msg += '😔 Мимо\n-' + bet;
+                msg += '😔 ПРОИГРЫШ! -' + bet;
             }
-            
-            updateBal();
-            showResult('dice-result', msg, win);
-            btn.disabled = false;
+
+            updateBal(); // Отправляем финальный баланс боту
+            showDiceResult(msg, win);
         }
+
+        function showDiceResult(msg, win) {
+            const el = document.getElementById('diceResult');
+            el.textContent = msg;
+            el.className = 'result-msg ' + (win ? 'win-msg' : 'lose-msg');
+        }
+
+        setDice('high');
+        showGame('slots');
     </script>
 </body>
 </html>
