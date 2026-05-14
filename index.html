@@ -6,282 +6,108 @@
     <title>BOBER SLOTS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            background: #1a1a1a; /* Фоновый цвет на случай отсутствия картинки */
-            background: url('back.png') center/cover fixed;
-            font-family: -apple-system, sans-serif;
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .container{
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 15px;
-            min-height: 100vh;
-            background: rgba(0,0,0,0.6);
-        }
-        .header{
-            text-align: center;
-            padding: 20px;
-            background: rgba(0,0,0,0.8);
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ff8c00;
-        }
-        .header h1{
-            color: #ff8c00;
-            font-size: 28px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px black;
-        }
-        .balance{
-            font-size: 22px;
-            background: linear-gradient(145deg, #ff8c00, #ffae00);
-            padding: 10px 25px;
-            border-radius: 25px;
-            color: #000;
-            font-weight: bold;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
-        }
-        .game-box{
-            background: rgba(0,0,0,0.8);
-            border: 2px solid #ff8c00;
-            border-radius: 20px;
-            padding: 25px;
-            margin: 15px 0;
-            text-align: center;
-        }
-        .slots-row{
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .slot-item{
-            width: 90px;
-            height: 90px;
-            background: #111;
-            border: 3px solid #ff8c00;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 45px;
-        }
-        .bet-section{
-            text-align: center;
-            margin: 20px 0;
-        }
-        .bet-section input{
-            width: 150px;
-            padding: 15px;
-            font-size: 22px;
-            text-align: center;
-            background: #000;
-            border: 2px solid #ff8c00;
-            border-radius: 10px;
-            color: white;
-            margin-bottom: 10px;
-        }
-        .quick-btns{
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .quick-btns button{
-            padding: 8px 12px;
-            background: #333;
-            border: 1px solid #ff8c00;
-            border-radius: 8px;
-            color: #ff8c00;
-            font-weight: bold;
-        }
-        .play-btn{
-            width: 100%;
-            padding: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            background: #ff8c00;
-            border: none;
-            border-radius: 15px;
-            color: #000;
-            cursor: pointer;
-            box-shadow: 0 5px 0 #b36200;
-        }
-        .play-btn:active{
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #b36200;
-        }
-        .result-msg{
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-        .win-msg{ background: rgba(0,255,0,0.2); border: 1px solid #00ff00; color: #00ff00; }
-        .lose-msg{ background: rgba(255,0,0,0.2); border: 1px solid #ff0000; color: #ff6666; }
-        .nav-btns{
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .nav-btns button{
-            flex: 1;
-            padding: 15px;
-            background: #222;
-            border: 1px solid #444;
-            border-radius: 10px;
-            color: #888;
-            font-weight: bold;
-        }
-        .nav-btns button.active{
-            border-color: #ff8c00;
-            color: #ff8c00;
-            background: #000;
-        }
+        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .balance-box { background: #ff8c00; color: black; padding: 15px; border-radius: 15px; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+        .slot-container { display: flex; justify-content: center; gap: 10px; margin: 30px 0; }
+        .slot { width: 80px; height: 80px; background: #000; border: 3px solid #ff8c00; border-radius: 10px; font-size: 40px; display: flex; align-items: center; justify-content: center; }
+        .btn { background: #ff8c00; border: none; padding: 15px 30px; font-size: 20px; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; }
+        .btn:disabled { background: #555; }
+        input { width: 100px; padding: 10px; font-size: 18px; margin-bottom: 10px; border-radius: 5px; border: none; text-align: center; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🦫 BOBER SLOTS</h1>
-            <div class="balance">💰 <span id="bal">Загрузка...</span></div>
-        </div>
 
-        <div id="game-slots">
-            <div class="game-box">
-                <div class="slots-row">
-                    <div class="slot-item" id="s1">🦫</div>
-                    <div class="slot-item" id="s2">🦫</div>
-                    <div class="slot-item" id="s3">🦫</div>
-                </div>
-            </div>
-            <div class="bet-section">
-                <input type="number" id="slotBet" value="100">
-                <div class="quick-btns">
-                    <button onclick="setSlotBet(100)">100</button>
-                    <button onclick="setSlotBet(500)">500</button>
-                    <button onclick="setSlotBet(1000)">1000</button>
-                </div>
-            </div>
-            <button class="play-btn" id="spinBtn" onclick="playSlots()">🎰 КРУТИТЬ</button>
-            <div id="slotResult"></div>
-        </div>
+    <div class="balance-box">💰 <span id="bal">Загрузка...</span></div>
 
-        <div class="nav-btns">
-            <button class="active">СЛОТЫ</button>
-            <button onclick="alert('Скоро!')">КОСТИ</button>
-        </div>
+    <div class="slot-container">
+        <div class="slot" id="s1">🦫</div>
+        <div class="slot" id="s2">🦫</div>
+        <div class="slot" id="s3">🦫</div>
     </div>
+
+    <p>СТАВКА:</p>
+    <input type="number" id="betInput" value="100">
+    
+    <button class="btn" id="spinBtn" onclick="play()">🎰 КРУТИТЬ</button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        // !!! ВАЖНО: ЗАМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШ АДРЕС NGROK ИЛИ СЕРВЕРА !!!
-        const API_BASE = "https://ВАШ-АДРЕС.ngrok-free.app"; 
+        // СЮДА ВСТАВИТЬ ССЫЛКУ ИЗ NGROK
+        const API_URL = "https://ВАШ_АДРЕС.ngrok-free.app"; 
         
         const userId = tg.initDataUnsafe?.user?.id || 0;
-        let balance = 0;
-        let isSpinning = false;
+        let currentBalance = 0;
 
-        // Загрузка баланса с сервера
-        async function fetchBalance() {
-            if (isSpinning) return; // Не обновлять во время анимации
+        // Получить баланс с сервера
+        async function loadBalance() {
             try {
-                const response = await fetch(`${API_BASE}/get_balance?user_id=${userId}`);
-                const data = await response.json();
-                balance = data.balance;
-                document.getElementById('bal').textContent = balance;
-            } catch (e) {
-                console.error("Ошибка связи с сервером");
-                document.getElementById('bal').textContent = "Ошибка";
-            }
+                const res = await fetch(`${API_URL}/get_balance?user_id=${userId}`);
+                const data = await res.json();
+                currentBalance = data.balance;
+                document.getElementById('bal').textContent = currentBalance;
+            } catch (e) { console.log("Ошибка API"); }
         }
 
-        // Обновление баланса на сервере (после игры)
-        async function updateServerBalance(amountChange) {
+        // Отправить изменение баланса (выигрыш или ставку)
+        async function syncBalance(change) {
             try {
-                await fetch(`${API_BASE}/update_balance`, {
+                const res = await fetch(`${API_URL}/update_balance`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ user_id: userId, amount: amountChange })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, amount: change })
                 });
-            } catch (e) { console.error("Ошибка сохранения"); }
+                const data = await res.json();
+                currentBalance = data.balance;
+                document.getElementById('bal').textContent = currentBalance;
+            } catch (e) { console.log("Ошибка синхронизации"); }
         }
 
-        function setSlotBet(v) { document.getElementById('slotBet').value = v; }
-
-        async function playSlots() {
-            if (isSpinning) return;
-            const bet = parseInt(document.getElementById('slotBet').value);
-            
-            if (bet > balance) {
-                alert("Недостаточно монет! Получите бонус в боте.");
+        async function play() {
+            const bet = parseInt(document.getElementById('betInput').value);
+            if (bet > currentBalance) {
+                alert("Недостаточно монет!");
                 return;
             }
 
-            isSpinning = true;
-            balance -= bet;
-            document.getElementById('bal').textContent = balance;
-            
-            // Сразу сообщаем серверу о ставке
-            await updateServerBalance(-bet);
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
 
-            const sym = ['🦫','🍋','🍊','🍇','💎','7️⃣'];
-            const spinBtn = document.getElementById('spinBtn');
-            spinBtn.disabled = true;
-            spinBtn.style.opacity = "0.5";
+            // 1. Снимаем ставку
+            await syncBalance(-bet);
 
-            // Анимация
-            for (let i = 0; i < 10; i++) {
-                document.getElementById('s1').textContent = sym[Math.floor(Math.random()*6)];
-                document.getElementById('s2').textContent = sym[Math.floor(Math.random()*6)];
-                document.getElementById('s3').textContent = sym[Math.floor(Math.random()*6)];
+            // 2. Анимация
+            const symbols = ['🦫', '💎', '7️⃣', '🍋', '🍇'];
+            for(let i=0; i<10; i++) {
+                document.getElementById('s1').textContent = symbols[Math.floor(Math.random()*5)];
+                document.getElementById('s2').textContent = symbols[Math.floor(Math.random()*5)];
+                document.getElementById('s3').textContent = symbols[Math.floor(Math.random()*5)];
                 await new Promise(r => setTimeout(r, 100));
             }
 
-            const r = [sym[Math.floor(Math.random()*6)], sym[Math.floor(Math.random()*6)], sym[Math.floor(Math.random()*6)]];
+            // 3. Результат
+            const r = [symbols[Math.floor(Math.random()*5)], symbols[Math.floor(Math.random()*5)], symbols[Math.floor(Math.random()*5)]];
             document.getElementById('s1').textContent = r[0];
             document.getElementById('s2').textContent = r[1];
             document.getElementById('s3').textContent = r[2];
 
+            // 4. Проверка выигрыша
             let win = 0;
             if (r[0] === r[1] && r[1] === r[2]) win = bet * 10;
             else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) win = Math.floor(bet * 1.5);
 
             if (win > 0) {
-                balance += win;
-                await updateServerBalance(win);
-                showResult(`ВЫИГРЫШ: +${win}`, true);
-            } else {
-                showResult(`ПРОИГРЫШ: -${bet}`, false);
+                await syncBalance(win);
+                alert("Победа! +" + win);
             }
 
-            document.getElementById('bal').textContent = balance;
-            isSpinning = false;
-            spinBtn.disabled = false;
-            spinBtn.style.opacity = "1";
+            btn.disabled = false;
         }
 
-        function showResult(msg, isWin) {
-            const res = document.getElementById('slotResult');
-            res.textContent = msg;
-            res.className = 'result-msg ' + (isWin ? 'win-msg' : 'lose-msg');
-        }
-
-        // Первичная загрузка
-        fetchBalance();
-
-        // Проверка баланса каждые 5 секунд (на случай если админ выдал бонус)
-        setInterval(fetchBalance, 5000);
-
+        loadBalance();
+        setInterval(loadBalance, 5000); // Проверять баланс каждые 5 сек (для бонусов)
     </script>
 </body>
 </html>
